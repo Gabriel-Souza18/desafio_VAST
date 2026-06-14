@@ -2,7 +2,8 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
-
+from datetime import datetime
+import os
 
 def infos(df:pd.DataFrame):
     print("Bairros:")
@@ -61,7 +62,9 @@ def prioridades(df: pd.DataFrame):
     return priority_by_neigh
 
 def gerar_graficos(df:pd.DataFrame, priority_by_neigh):
-    # Configuração do estilo
+    os.makedirs('graficos', exist_ok=True)
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")  # exemplo: 20260614_162826
+
     sns.set_style("whitegrid")
     
     # Gráfico 1: Top 10 bairros (barras horizontais)
@@ -71,8 +74,8 @@ def gerar_graficos(df:pd.DataFrame, priority_by_neigh):
     plt.xlabel('Score de prioridade')
     plt.title('Top 10 bairros com maior necessidade de resposta emergencial')
     plt.tight_layout()
-    plt.savefig('top10_prioridade.png', dpi=150)
-    plt.savefig("Grafico1")
+
+    plt.savefig("graficos/grafico1"+timestamp)
     
     # Gráfico 2: Heatmap de danos por bairro (todos os 19 bairros)
     damage_cols = ['buildings', 'roads_and_bridges', 'power', 'sewer_and_water', 'medical', 'shake_intensity']
@@ -83,8 +86,7 @@ def gerar_graficos(df:pd.DataFrame, priority_by_neigh):
                 cbar_kws={'label': 'Intensidade média (0-10)'})
     plt.title('Intensidade média de danos por bairro (valores preenchidos com mediana)')
     plt.tight_layout()
-    plt.savefig('heatmap_danos.png', dpi=150)
-    plt.savefig("Grafico2")
+    plt.savefig("graficos/grafico2"+timestamp)
 
 df = pd.read_csv("MC1/mc1-reports-data.csv")
 infos(df)
